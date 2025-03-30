@@ -1,40 +1,129 @@
 <!DOCTYPE html>
 <html lang="es">
- <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Pasatiempo</title>
+    <title>Agregar Pasatiempo - Sistema de Base de Datos</title>
     <script type="module" src="lib/js/submitForm.js"></script>
     <script type="module" src="lib/js/muestraError.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
-        form { background: #f9f9f9; padding: 20px; border-radius: 8px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; }
-        input { width: 100%; padding: 8px; margin-bottom: 16px; border: 1px solid #ddd; border-radius: 4px; }
-        button { background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #f5f8fa;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        form {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #34495e;
+        }
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52,152,219,0.2);
+        }
+        .required {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            text-align: right;
+            margin-bottom: 1.5rem;
+        }
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-submit {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .btn-submit:hover {
+            background-color: #27ae60;
+        }
+        .btn-cancel {
+            background-color: #e74c3c;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn-cancel:hover {
+            background-color: #c0392b;
+        }
     </style>
-  </head>
+</head>
 <body>
     <form id="agregarForm">
-        <h1>Agregar Pasatiempo</h1>
-        <p><a href="index.html">Cancelar</a></p>
+        <h1>Agregar Nuevo Pasatiempo</h1>
         
-        <label>
-            Nombre *
-            <input name="nombre" required>
-        </label>
+        <a href="index.html" class="btn btn-cancel">Cancelar</a>
         
-        <p>* Campos obligatorios</p>
+        <div class="form-group">
+            <label for="nombre">Nombre del Pasatiempo *</label>
+            <input type="text" id="nombre" name="nombre" required>
+        </div>
         
-        <button type="submit">Agregar</button>
+        <p class="required">* Campo obligatorio</p>
+        
+        <button type="submit" class="btn btn-submit">Guardar Pasatiempo</button>
     </form>
 
     <script type="module">
-        document.getElementById('agregarForm').addEventListener('submit', async (event) => {
-            event.preventDefault();
+        document.getElementById('agregarForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
             try {
-                await submitForm('srv/pasatiempo-agrega.php', event);
-                location.href = 'index.html';
+                const formData = new FormData(e.target);
+                const response = await fetch('srv/pasatiempo-agrega.php', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = 'index.html';
+                } else {
+                    throw new Error(data.error || 'Error desconocido');
+                }
             } catch (error) {
                 muestraError(error);
             }
