@@ -1,30 +1,23 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
+ <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modificar Pasatiempo</title>
-    <script type="module" src="lib/js/consumeJson.js"></script>
+    <title>Agregar Pasatiempo</title>
     <script type="module" src="lib/js/submitForm.js"></script>
-    <script type="module" src="lib/js/muestraObjeto.js"></script>
     <script type="module" src="lib/js/muestraError.js"></script>
     <style>
         body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
         form { background: #f9f9f9; padding: 20px; border-radius: 8px; }
         label { display: block; margin-bottom: 8px; font-weight: bold; }
         input { width: 100%; padding: 8px; margin-bottom: 16px; border: 1px solid #ddd; border-radius: 4px; }
-        .buttons { display: flex; gap: 10px; }
-        button { padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; }
-        .save { background-color: #4CAF50; color: white; }
-        .delete { background-color: #f44336; color: white; }
+        button { background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; }
     </style>
-</head>
+  </head>
 <body>
-    <form id="forma">
-        <h1>Modificar Pasatiempo</h1>
+    <form id="agregarForm">
+        <h1>Agregar Pasatiempo</h1>
         <p><a href="index.html">Cancelar</a></p>
-        
-        <input name="id" type="hidden">
         
         <label>
             Nombre *
@@ -33,47 +26,19 @@
         
         <p>* Campos obligatorios</p>
         
-        <div class="buttons">
-            <button type="submit" class="save">Guardar</button>
-            <button type="button" class="delete" id="deleteBtn">Eliminar</button>
-        </div>
+        <button type="submit">Agregar</button>
     </form>
 
     <script type="module">
-        const params = new URL(location.href).searchParams;
-        
-        // Cargar datos al iniciar
-        if (params.size > 0) {
-            try {
-                const respuesta = await consumeJson('srv/pasatiempo.php?' + params);
-                muestraObjeto(document.getElementById('forma'), respuesta.body);
-            } catch (error) {
-                muestraError(error);
-            }
-        }
-        
-        // Manejar envío del formulario
-        document.getElementById('forma').addEventListener('submit', async (event) => {
+        document.getElementById('agregarForm').addEventListener('submit', async (event) => {
             event.preventDefault();
             try {
-                await submitForm('srv/pasatiempo-modifica.php', event);
+                await submitForm('srv/pasatiempo-agrega.php', event);
                 location.href = 'index.html';
             } catch (error) {
                 muestraError(error);
             }
         });
-        
-        // Manejar eliminación
-        document.getElementById('deleteBtn').addEventListener('click', async () => {
-            if (params.size > 0 && confirm('¿Confirma la eliminación?')) {
-                try {
-                    await consumeJson('srv/pasatiempo-elimina.php?' + params);
-                    location.href = 'index.html';
-                } catch (error) {
-                    muestraError(error);
-                }
-            }
-        });
     </script>
-    </body>
+</body>
 </html> 
