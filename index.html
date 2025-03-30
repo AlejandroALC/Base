@@ -3,34 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso a base de datos</title>
-    <script type="module" src="lib/js/consumeJson.js"></script>
-    <script type="module" src="lib/js/muestraObjeto.js"></script>
-    <script type="module" src="lib/js/muestraError.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        ul { list-style: none; padding: 0; }
-        li { background: #f9f9f9; padding: 10px; margin-bottom: 8px; border-radius: 4px; }
-        a { color: #4CAF50; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-    </style>
+    <title>Gestor de Pasatiempos</title>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <h1>Acceso a base de datos</h1>
-    <p><a href="agrega.html">Agregar nuevo pasatiempo</a></p>
-    <ul id="lista">
-        <li><progress max="100">Cargando...</progress></li>
-    </ul>
+    <div class="container">
+        <header>
+            <h1>Mis Pasatiempos</h1>
+            <a href="agregar.html" class="btn">Agregar Nuevo</a>
+        </header>
+        
+        <div class="loading" id="loading">
+            <progress max="100">Cargando...</progress>
+        </div>
+        
+        <ul class="pasatiempos-list" id="pasatiemposList"></ul>
+    </div>
 
-    <script type="module">
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                const respuesta = await consumeJson('srv/pasatiempos.php');
-                muestraObjeto(document, respuesta.body);
-            } catch (error) {
-                muestraError(error);
-            }
+    <script src="assets/js/db.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarPasatiempos();
         });
     </script>
-   </body>
-</html> 
+</body>
+</html>
