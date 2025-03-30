@@ -1,31 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width">
-
- <title>Acceso a base de datos</title>
-
- <script type="module" src="lib/js/consumeJson.js"></script>
- <script type="module" src="lib/js/muestraObjeto.js"></script>
- <script type="module" src="lib/js/muestraError.js"></script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso a base de datos</title>
+    <script type="module" src="lib/js/consumeJson.js"></script>
+    <script type="module" src="lib/js/muestraObjeto.js"></script>
+    <script type="module" src="lib/js/muestraError.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        ul { list-style: none; padding: 0; }
+        li { background: #f9f9f9; padding: 10px; margin-bottom: 8px; border-radius: 4px; }
+        a { color: #4CAF50; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
 </head>
+<body>
+    <h1>Acceso a base de datos</h1>
+    <p><a href="agrega.html">Agregar nuevo pasatiempo</a></p>
+    <ul id="lista">
+        <li><progress max="100">Cargando...</progress></li>
+    </ul>
 
-<body onload="consumeJson('srv/pasatiempos.php')
-   .then(respuesta => muestraObjeto(document, respuesta.body))
-   .catch(muestraError)">
-
- <h1>Acceso a base de datos</h1>
-
- <p><a href="agrega.html">Agregar</a></p>
-
- <ul id="lista">
-  <li><progress max="100">Cargando&hellip;</progress></li>
- </ul>
-
-</body>
-
+    <script type="module">
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const respuesta = await consumeJson('srv/pasatiempos.php');
+                muestraObjeto(document, respuesta.body);
+            } catch (error) {
+                muestraError(error);
+            }
+        });
+    </script>
+   </body>
 </html>
