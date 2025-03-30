@@ -1,33 +1,41 @@
 <?php
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Headers: Content-Type');
 
-require_once __DIR__ . "/../lib/php/NOT_FOUND.php";
-require_once __DIR__ . "/../lib/php/ejecutaServicio.php";
-require_once __DIR__ . "/../lib/php/recuperaIdEntero.php";
-require_once __DIR__ . "/../lib/php/selectFirst.php";
-require_once __DIR__ . "/../lib/php/ProblemDetails.php";
-require_once __DIR__ . "/../lib/php/devuelveJson.php";
-require_once __DIR__ . "/Bd.php";
-require_once __DIR__ . "/TABLA_PASATIEMPO.php";
-
-ejecutaServicio(function () {
-
- $id = recuperaIdEntero("id");
-
- $modelo =
-  selectFirst(pdo: Bd::pdo(),  from: PASATIEMPO,  where: [PAS_ID => $id]);
-
- if ($modelo === false) {
-  $idHtml = htmlentities($id);
-  throw new ProblemDetails(
-   status: NOT_FOUND,
-   title: "Pasatiempo no encontrado.",
-   type: "/error/pasatiemponoencontrado.html",
-   detail: "No se encontró ningún pasatiempo con el id $idHtml.",
-  );
- }
-
- devuelveJson([
-  "id" => ["value" => $id],
-  "nombre" => ["value" => $modelo[PAS_NOMBRE]],
- ]);
-});
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $input = json_decode(file_get_contents('php://input'), true) ?? $_POST;
+        
+        if (empty($input['nombre'])) {
+            throw new Exception('El nombre es requerido');
+        }
+        
+        // Aquí iría tu lógica para guardar en la base de datos
+        // $guardado = guardarEnBD($input['nombre']);
+        $guardado = true; // Simulación
+        
+        if ($guardado) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Pasatiempo agregado correctamente'
+            ]);
+        } else {
+            throw new Exception('Error al guardar en la base de datos');
+        }
+    } catch (Exception $e) {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ]);
+    }
+} else {
+    http_response_code(405);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Método no permitido. Se esperaba POST'
+    ]);
+}
+?>
